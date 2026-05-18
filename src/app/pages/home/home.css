@@ -1,5 +1,5 @@
 :host {
-  /* Design Tokens & Theme Variables */
+  
   --bg-dark-base: #060913;
   --bg-dark-surface: #0e1322;
   --primary: #3b82f6;
@@ -29,9 +29,6 @@
   overflow-x: hidden;
 }
 
-/* ========================================== */
-/* AMBIENT BACKGROUND GLOW */
-/* ========================================== */
 .bg-glow {
   position: absolute;
   top: 0;
@@ -183,9 +180,6 @@
   text-transform: uppercase;
 }
 
-/* ========================================== */
-/* TITLE SECTION */
-/* ========================================== */
 .title-section {
   text-align: center;
   margin-bottom: 35px;
@@ -209,9 +203,6 @@
   margin: 0 auto;
 }
 
-/* ========================================== */
-/* FORM AND INPUTS */
-/* ========================================== */
 .form-container {
   display: flex;
   flex-direction: column;
@@ -236,6 +227,22 @@
 .label-icon {
   font-size: 18px;
   color: var(--accent-cyan);
+}
+
+.field-hint {
+  font-size: 11.5px;
+  color: rgba(255, 255, 255, 0.42);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 4px;
+  line-height: 1.4;
+}
+
+.field-hint-icon {
+  font-size: 14px;
+  color: var(--accent-cyan);
+  opacity: 0.8;
 }
 
 .input-wrapper {
@@ -285,9 +292,6 @@
   cursor: not-allowed;
 }
 
-/* ========================================== */
-/* INTERACTIVE DROP ZONE */
-/* ========================================== */
 .drop-zone {
   border: 2px dashed rgba(255, 255, 255, 0.12);
   border-radius: 16px;
@@ -344,9 +348,6 @@
   border: 1px solid rgba(255, 255, 255, 0.06);
 }
 
-/* ========================================== */
-/* SELECTED FILE CARD */
-/* ========================================== */
 .file-card {
   display: flex;
   align-items: center;
@@ -424,9 +425,6 @@
   cursor: not-allowed;
 }
 
-/* ========================================== */
-/* ACTION BUTTON */
-/* ========================================== */
 .btn-submit {
   width: 100%;
   padding: 16px;
@@ -486,9 +484,6 @@
   }
 }
 
-/* ========================================== */
-/* ON-PAGE RESULTS DETAILS SECTION */
-/* ========================================== */
 .resultado-container {
   margin-top: 40px;
 }
@@ -569,9 +564,6 @@
   margin: 0;
 }
 
-/* ========================================== */
-/* DASHBOARD GRID */
-/* ========================================== */
 .dashboard-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -704,9 +696,6 @@
   margin: 0;
 }
 
-/* ========================================== */
-/* RESULT POPUP MODAL */
-/* ========================================== */
 .modal-backdrop {
   position: fixed;
   top: 0;
@@ -938,9 +927,6 @@
   box-shadow: 0 0 15px rgba(239, 68, 68, 0.08);
 }
 
-/* ========================================== */
-/* CORE ANIMATIONS & TRANSITIONS */
-/* ========================================== */
 @keyframes fadeInUp {
   from {
     opacity: 0;
@@ -983,9 +969,6 @@
   animation: zoomIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) both;
 }
 
-/* ========================================== */
-/* ERROR / WARNING CLINICAL ALERT BANNER */
-/* ========================================== */
 .alert-banner {
   display: flex;
   justify-content: space-between;

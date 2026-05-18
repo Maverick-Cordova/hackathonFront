@@ -19,7 +19,6 @@ export class Home {
   resultado: any = null;
   mostrarModal = false;
 
-  // Sistema de notificaciones e impresiones clínicas premium
   mensajeError: string | null = null;
   tipoError: 'warning' | 'error' | 'success' | null = null;
   private errorTimeout: any;
@@ -34,7 +33,6 @@ export class Home {
     this.tipoError = tipo;
     this.cdr.detectChanges();
 
-    // Limpieza automática tras 7 segundos
     if (this.errorTimeout) {
       clearTimeout(this.errorTimeout);
     }
@@ -56,7 +54,7 @@ export class Home {
       this.archivo = file;
       this.nombreArchivo = file.name;
       this.tamanoArchivo = this.formatearTamano(file.size);
-      this.cdr.detectChanges(); // Forzar actualización visual inmediata
+      this.cdr.detectChanges();
     }
   }
 
@@ -100,12 +98,8 @@ export class Home {
     this.http.post('http://localhost:3000/preautorizacion', formData)
     .subscribe({
       next: (response: any) => {
-        console.log('[SeguroIA] Respuesta HTTP 200 recibida del servidor:', response);
-        
-        // 1. Detener el spinner de inmediato
         this.loading = false;
         
-        // 2. Determinar el mensaje del banner de inmediato para dar feedback instantáneo
         let mensajeFriendly = '';
         let tipoAlerta: 'success' | 'error' = 'success';
         
@@ -119,30 +113,25 @@ export class Home {
         
         this.mensajeError = mensajeFriendly;
         this.tipoError = tipoAlerta;
-        this.cdr.detectChanges(); // Detiene el spinner y pinta el banner verde/rojo al exacto milisegundo de red!
+        this.cdr.detectChanges();
         
-        // 3. Deferir renderizado del modal e informes completos al siguiente tick para máxima suavidad
         setTimeout(() => {
           try {
             this.resultado = response;
             if (response.paciente && response.paciente.cedula) {
               this.cedula = response.paciente.cedula;
             }
-            this.mostrarModal = true; // Mostrar la ventana emergente de resultado
-            this.cdr.detectChanges(); // Forzar renderizado del modal e informes
+            this.mostrarModal = true;
+            this.cdr.detectChanges();
           } catch (renderError) {
-            console.error('[SeguroIA] Error de renderizado en el template:', renderError);
+            console.error(renderError);
           }
         }, 0);
       },
       error: (error) => {
-        console.error('[SeguroIA] Error capturado en el flujo HTTP del frontend:', error);
-        
-        // 1. Detener el spinner e invocar repaint de inmediato
         this.loading = false;
-        this.cdr.detectChanges(); // Detiene el spinner de carga al exacto milisegundo de red
+        this.cdr.detectChanges();
 
-        // Auto-completar cédula si el backend logró extraerla del PDF pero el afiliado no está registrado
         if (error?.error?.cedula) {
           this.cedula = error.error.cedula;
         }
@@ -172,13 +161,11 @@ export class Home {
           mensajeFriendly = `Error de conexión: ${error.message}`;
         }
         
-        // 2. Deferir renderizado del error al siguiente tick
         setTimeout(() => {
           this.mensajeError = mensajeFriendly;
           this.tipoError = 'error';
-          this.cdr.detectChanges(); // Barrido reactivo instantáneo
+          this.cdr.detectChanges();
           
-          // Configurar la auto-limpieza
           if (this.errorTimeout) {
             clearTimeout(this.errorTimeout);
           }

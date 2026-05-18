@@ -7,7 +7,6 @@
 <div class="container">
 
   <div class="main-card">
-    <!-- Brand / Logo Header -->
     <div class="brand-header">
       <div class="brand-logo">
         <span class="material-icons-round logo-icon">shield_moon</span>
@@ -16,7 +15,6 @@
       <div class="brand-badge">AI CLINICAL MAVERICK</div>
     </div>
 
-    <!-- Title and Subtitle -->
     <div class="title-section">
       <h1>Pre-Autorización Quirúrgica</h1>
       <p class="subtitle">
@@ -25,7 +23,6 @@
       </p>
     </div>
 
-    <!-- Beautiful Clinical Alert Banner -->
     <div class="alert-banner animate-fade-in" *ngIf="mensajeError" 
       [class.alert-warning]="tipoError === 'warning'"
       [class.alert-error]="tipoError === 'error'"
@@ -46,28 +43,28 @@
       </button>
     </div>
 
-    <!-- Input Form -->
     <div class="form-container">
-      <!-- Cédula Field -->
       <div class="form-group">
         <label for="cedula-input">
           <span class="material-icons-round label-icon">badge</span>
-          Cédula de Identidad del Paciente
+          Cédula de Identidad (Opcional)
         </label>
         <div class="input-wrapper">
           <span class="material-icons-round input-icon">person</span>
-          <input id="cedula-input" type="text" [(ngModel)]="cedula" placeholder="Ej: 1723456789" [disabled]="loading" />
+          <input id="cedula-input" type="text" [(ngModel)]="cedula" placeholder="Ej: 0944329077 (Opcional - Auto-extraído por IA)" [disabled]="loading" />
+        </div>
+        <div class="field-hint">
+          <span class="material-icons-round field-hint-icon">info</span>
+          Si se deja vacío, la Inteligencia Artificial buscará y extraerá la cédula automáticamente desde el reporte médico.
         </div>
       </div>
 
-      <!-- PDF File Upload Zone -->
       <div class="form-group">
         <label>
           <span class="material-icons-round label-icon">description</span>
           Informe Médico en PDF
         </label>
 
-        <!-- Drop zone when NO file is selected -->
         <div *ngIf="!archivo" class="drop-zone" (click)="fileInput.click()">
           <span class="material-icons-round upload-icon">cloud_upload</span>
           <p class="drop-text-primary">Arrastra tu reporte PDF aquí</p>
@@ -76,7 +73,6 @@
           <input type="file" #fileInput (change)="seleccionarArchivo($event)" accept=".pdf" style="display: none;" />
         </div>
 
-        <!-- File selected state card -->
         <div *ngIf="archivo" class="file-card animate-fade-in">
           <div class="file-card-info">
             <span class="material-icons-round pdf-icon">picture_as_pdf</span>
@@ -90,12 +86,10 @@
             <span class="material-icons-round">close</span>
           </button>
 
-          <!-- Hidden file input to preserve reference -->
           <input type="file" #fileInput (change)="seleccionarArchivo($event)" accept=".pdf" style="display: none;" />
         </div>
       </div>
 
-      <!-- Action Button -->
       <button class="btn-submit" (click)="enviar()" [disabled]="loading || !archivo">
         <span *ngIf="!loading" class="material-icons-round btn-icon">psychology</span>
         <span *ngIf="loading" class="spinner"></span>
@@ -103,7 +97,6 @@
       </button>
     </div>
 
-    <!-- On-Page Detailed Analysis Section (always visible underneath once calculated) -->
     <div class="resultado-container animate-fade-in" *ngIf="resultado">
       <div class="section-divider">
         <span class="divider-line"></span>
@@ -111,7 +104,6 @@
         <span class="divider-line"></span>
       </div>
 
-      <!-- General Approval Banner -->
       <div class="resultado-banner" [class.banner-aprobado]="resultado?.aprobado"
         [class.banner-rechazado]="!resultado?.aprobado">
         <div class="banner-status-icon">
@@ -126,10 +118,8 @@
         </div>
       </div>
 
-      <!-- Dashboard Grid -->
       <div class="dashboard-grid">
 
-        <!-- Column 1: Patient Info -->
         <div class="dashboard-card" *ngIf="resultado?.paciente">
           <div class="card-header">
             <span class="material-icons-round card-header-icon">person</span>
@@ -151,7 +141,6 @@
           </div>
         </div>
 
-        <!-- Column 2: Clinical Details -->
         <div class="dashboard-card">
           <div class="card-header">
             <span class="material-icons-round card-header-icon">health_and_safety</span>
@@ -184,18 +173,13 @@
   </div>
 </div>
 
-<!-- ========================================== -->
-<!-- RESULT POPUP MODAL (VENTANA EMERGENTE) -->
-<!-- ========================================== -->
 <div class="modal-backdrop" *ngIf="mostrarModal" (click)="cerrarModal()">
   <div class="modal-card animate-zoom-in" [class.modal-aprobado]="resultado?.aprobado"
     [class.modal-rechazado]="!resultado?.aprobado" (click)="$event.stopPropagation()">
-    <!-- Modal Close Icon Button -->
     <button class="modal-close-btn" (click)="cerrarModal()">
       <span class="material-icons-round">close</span>
     </button>
 
-    <!-- Glowing Circle Status Icon -->
     <div class="modal-status-icon-container">
       <div class="status-icon-ring"></div>
       <span class="material-icons-round status-icon">
@@ -203,7 +187,6 @@
       </span>
     </div>
 
-    <!-- Veredict Text -->
     <div class="modal-title-section">
       <span class="modal-badge-status">RESULTADO DEL ANÁLISIS</span>
       <h2 class="modal-status-title">
@@ -211,7 +194,6 @@
       </h2>
     </div>
 
-    <!-- Patient Highlight Box -->
     <div class="modal-patient-highlight" *ngIf="resultado?.paciente">
       <span class="material-icons-round patient-icon">medical_information</span>
       <div class="patient-details">
@@ -220,7 +202,6 @@
       </div>
     </div>
 
-    <!-- Clinical Reason Summary -->
     <div class="modal-reason-container">
       <h4>Detalle del Diagnóstico:</h4>
       <p class="modal-reason-text">
@@ -228,7 +209,6 @@
       </p>
     </div>
 
-    <!-- Action Buttons -->
     <div class="modal-actions">
       <button class="btn-modal-dismiss" (click)="cerrarModal()">
         Ver Informe Completo
