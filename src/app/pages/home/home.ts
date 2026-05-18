@@ -26,7 +26,7 @@ export class Home {
   constructor(
     private http: HttpClient,
     private cdr: ChangeDetectorRef
-  ) {}
+  ) { }
 
   mostrarError(mensaje: string, tipo: 'warning' | 'error' | 'success' = 'error') {
     this.mensajeError = mensaje;
@@ -74,7 +74,7 @@ export class Home {
       fileInput.value = '';
     }
     this.limpiarError();
-    this.cdr.detectChanges(); // Forzar actualización visual inmediata
+    this.cdr.detectChanges();
   }
 
   enviar() {
@@ -90,91 +90,91 @@ export class Home {
     formData.append('archivo', this.archivo);
 
     this.loading = true;
-    this.resultado = null; // Limpiar resultado previo
-    this.cdr.detectChanges(); // Mostrar spinner inmediatamente
+    this.resultado = null;
+    this.cdr.detectChanges();
 
     console.log('[SeguroIA] Enviando petición de pre-autorización al servidor...');
 
-    this.http.post('http://localhost:3000/preautorizacion', formData)
-    .subscribe({
-      next: (response: any) => {
-        this.loading = false;
-        
-        let mensajeFriendly = '';
-        let tipoAlerta: 'success' | 'error' = 'success';
-        
-        if (response.aprobado) {
-          mensajeFriendly = `¡Pre-Autorización Quirúrgica APROBADA! Especialidad: ${response.especialidad}. ${response.motivo}.`;
-          tipoAlerta = 'success';
-        } else {
-          mensajeFriendly = `Pre-Autorización RECHAZADA. Especialidad: ${response.especialidad || 'No identificada'}. Motivo: ${response.motivo}.`;
-          tipoAlerta = 'error';
-        }
-        
-        this.mensajeError = mensajeFriendly;
-        this.tipoError = tipoAlerta;
-        this.cdr.detectChanges();
-        
-        setTimeout(() => {
-          try {
-            this.resultado = response;
-            if (response.paciente && response.paciente.cedula) {
-              this.cedula = response.paciente.cedula;
-            }
-            this.mostrarModal = true;
-            this.cdr.detectChanges();
-          } catch (renderError) {
-            console.error(renderError);
-          }
-        }, 0);
-      },
-      error: (error) => {
-        this.loading = false;
-        this.cdr.detectChanges();
+    this.http.post('https://hackathon-1eel.onrender.com/preautorizacion', formData)
+      .subscribe({
+        next: (response: any) => {
+          this.loading = false;
 
-        if (error?.error?.cedula) {
-          this.cedula = error.error.cedula;
-        }
-        
-        let mensajeFriendly = 'No se pudo conectar con el motor de Inteligencia SeguroIA. Por favor, asegúrese de que el backend esté ejecutándose.';
-        
-        if (error.status === 404) {
-          if (error.error?.cedula) {
-            mensajeFriendly = `El paciente con cédula ${error.error.cedula} detectada en el PDF no se encuentra registrado en Notion.`;
+          let mensajeFriendly = '';
+          let tipoAlerta: 'success' | 'error' = 'success';
+
+          if (response.aprobado) {
+            mensajeFriendly = `¡Pre-Autorización Quirúrgica APROBADA! Especialidad: ${response.especialidad}. ${response.motivo}.`;
+            tipoAlerta = 'success';
           } else {
-            mensajeFriendly = 'La cédula ingresada no se encuentra registrada en la base de datos de afiliados. Por favor, verifique el número e intente de nuevo.';
+            mensajeFriendly = `Pre-Autorización RECHAZADA. Especialidad: ${response.especialidad || 'No identificada'}. Motivo: ${response.motivo}.`;
+            tipoAlerta = 'error';
           }
-        } else if (error.status === 400) {
-          if (error?.error?.error) {
-            mensajeFriendly = error.error.error;
-          } else {
-            mensajeFriendly = 'El informe médico enviado no es válido o está corrupto. Suba un PDF legible.';
-          }
-        } else if (error?.error?.error) {
-          const apiError = error.error.error;
-          if (apiError.includes('Paciente no encontrado')) {
-            mensajeFriendly = 'La cédula de identidad ingresada no pertenece a ningún paciente registrado en el sistema.';
-          } else {
-            mensajeFriendly = apiError;
-          }
-        } else if (error?.message) {
-          mensajeFriendly = `Error de conexión: ${error.message}`;
-        }
-        
-        setTimeout(() => {
+
           this.mensajeError = mensajeFriendly;
-          this.tipoError = 'error';
+          this.tipoError = tipoAlerta;
           this.cdr.detectChanges();
-          
-          if (this.errorTimeout) {
-            clearTimeout(this.errorTimeout);
+
+          setTimeout(() => {
+            try {
+              this.resultado = response;
+              if (response.paciente && response.paciente.cedula) {
+                this.cedula = response.paciente.cedula;
+              }
+              this.mostrarModal = true;
+              this.cdr.detectChanges();
+            } catch (renderError) {
+              console.error(renderError);
+            }
+          }, 0);
+        },
+        error: (error) => {
+          this.loading = false;
+          this.cdr.detectChanges();
+
+          if (error?.error?.cedula) {
+            this.cedula = error.error.cedula;
           }
-          this.errorTimeout = setTimeout(() => {
-            this.limpiarError();
-          }, 7000);
-        }, 0);
-      }
-    });
+
+          let mensajeFriendly = 'No se pudo conectar con el motor de Inteligencia SeguroIA. Por favor, asegúrese de que el backend esté ejecutándose.';
+
+          if (error.status === 404) {
+            if (error.error?.cedula) {
+              mensajeFriendly = `El paciente con cédula ${error.error.cedula} detectada en el PDF no se encuentra registrado en Notion.`;
+            } else {
+              mensajeFriendly = 'La cédula ingresada no se encuentra registrada en la base de datos de afiliados. Por favor, verifique el número e intente de nuevo.';
+            }
+          } else if (error.status === 400) {
+            if (error?.error?.error) {
+              mensajeFriendly = error.error.error;
+            } else {
+              mensajeFriendly = 'El informe médico enviado no es válido o está corrupto. Suba un PDF legible.';
+            }
+          } else if (error?.error?.error) {
+            const apiError = error.error.error;
+            if (apiError.includes('Paciente no encontrado')) {
+              mensajeFriendly = 'La cédula de identidad ingresada no pertenece a ningún paciente registrado en el sistema.';
+            } else {
+              mensajeFriendly = apiError;
+            }
+          } else if (error?.message) {
+            mensajeFriendly = `Error de conexión: ${error.message}`;
+          }
+
+          setTimeout(() => {
+            this.mensajeError = mensajeFriendly;
+            this.tipoError = 'error';
+            this.cdr.detectChanges();
+
+            if (this.errorTimeout) {
+              clearTimeout(this.errorTimeout);
+            }
+            this.errorTimeout = setTimeout(() => {
+              this.limpiarError();
+            }, 7000);
+          }, 0);
+        }
+      });
   }
 
   cerrarModal() {

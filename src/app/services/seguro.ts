@@ -10,7 +10,7 @@ export class SeguroService {
 
   validar(data: any) {
     return this.http.post(
-      'http://localhost:3000/validar',
+      'https://hackathon-1eel.onrender.com/validar',
       data
     );
   }
