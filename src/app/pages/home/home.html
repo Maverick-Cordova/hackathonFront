@@ -1,0 +1,293 @@
+<div class="bg-glow">
+  <div class="glow-orb orb-1"></div>
+  <div class="glow-orb orb-2"></div>
+  <div class="glow-orb orb-3"></div>
+</div>
+
+<div class="container">
+
+  <div class="main-card">
+    <!-- Brand / Logo Header -->
+    <div class="brand-header">
+      <div class="brand-logo">
+        <span class="material-icons-round logo-icon">shield_moon</span>
+        <span class="brand-text">Seguro<span class="brand-accent">IA</span></span>
+      </div>
+      <div class="brand-badge">AI CLINICAL ENGINE v2.4</div>
+    </div>
+
+    <!-- Title and Subtitle -->
+    <div class="title-section">
+      <h1>Pre-Autorización Quirúrgica</h1>
+      <p class="subtitle">
+        Análisis automático de informes médicos en PDF respaldado por Inteligencia Artificial para la validación de seguros.
+      </p>
+    </div>
+
+    <!-- Beautiful Error Alert Banner -->
+    <div 
+      class="alert-banner animate-fade-in" 
+      *ngIf="mensajeError"
+      [class.alert-warning]="tipoError === 'warning'"
+      [class.alert-error]="tipoError === 'error'"
+    >
+      <div class="alert-content">
+        <span class="material-icons-round alert-icon">
+          {{ tipoError === 'warning' ? 'error' : 'gpp_maybe' }}
+        </span>
+        <div class="alert-text-wrapper">
+          <span class="alert-title">
+            {{ tipoError === 'warning' ? 'Aviso del Sistema' : 'Error de Validación' }}
+          </span>
+          <span class="alert-desc">{{ mensajeError }}</span>
+        </div>
+      </div>
+      <button 
+        type="button" 
+        class="btn-alert-close" 
+        (click)="limpiarError()"
+        title="Cerrar aviso"
+      >
+        <span class="material-icons-round">close</span>
+      </button>
+    </div>
+
+    <!-- Input Form -->
+    <div class="form-container">
+      <!-- Cédula Field -->
+      <div class="form-group">
+        <label for="cedula-input">
+          <span class="material-icons-round label-icon">badge</span>
+          Cédula de Identidad del Paciente
+        </label>
+        <div class="input-wrapper">
+          <span class="material-icons-round input-icon">person</span>
+          <input
+            id="cedula-input"
+            type="text"
+            [(ngModel)]="cedula"
+            placeholder="Ej: 1723456789"
+            [disabled]="loading"
+          />
+        </div>
+      </div>
+
+      <!-- PDF File Upload Zone -->
+      <div class="form-group">
+        <label>
+          <span class="material-icons-round label-icon">description</span>
+          Informe Médico en PDF
+        </label>
+        
+        <!-- Drop zone when NO file is selected -->
+        <div 
+          *ngIf="!archivo"
+          class="drop-zone"
+          (click)="fileInput.click()"
+        >
+          <span class="material-icons-round upload-icon">cloud_upload</span>
+          <p class="drop-text-primary">Arrastra tu reporte PDF aquí</p>
+          <p class="drop-text-secondary">o haz clic para explorar en tu equipo</p>
+          <span class="file-type-badge">PDF (Máx. 10MB)</span>
+          <input
+            type="file"
+            #fileInput
+            (change)="seleccionarArchivo($event)"
+            accept=".pdf"
+            style="display: none;"
+          />
+        </div>
+
+        <!-- File selected state card -->
+        <div 
+          *ngIf="archivo" 
+          class="file-card animate-fade-in"
+        >
+          <div class="file-card-info">
+            <span class="material-icons-round pdf-icon">picture_as_pdf</span>
+            <div class="file-details">
+              <p class="file-name">{{ nombreArchivo }}</p>
+              <p class="file-size">{{ tamanoArchivo }}</p>
+            </div>
+          </div>
+          <button 
+            type="button"
+            class="btn-remove"
+            (click)="removerArchivo(fileInput)"
+            title="Quitar archivo"
+            [disabled]="loading"
+          >
+            <span class="material-icons-round">close</span>
+          </button>
+          
+          <!-- Hidden file input to preserve reference -->
+          <input
+            type="file"
+            #fileInput
+            (change)="seleccionarArchivo($event)"
+            accept=".pdf"
+            style="display: none;"
+          />
+        </div>
+      </div>
+
+      <!-- Action Button -->
+      <button
+        class="btn-submit"
+        (click)="enviar()"
+        [disabled]="loading || !cedula || !archivo"
+      >
+        <span *ngIf="!loading" class="material-icons-round btn-icon">psychology</span>
+        <span *ngIf="loading" class="spinner"></span>
+        <span class="btn-text">{{ loading ? 'Analizando Reporte con IA...' : 'Evaluar Solicitud' }}</span>
+      </button>
+    </div>
+
+    <!-- On-Page Detailed Analysis Section (always visible underneath once calculated) -->
+    <div
+      class="resultado-container animate-fade-in"
+      *ngIf="resultado"
+    >
+      <div class="section-divider">
+        <span class="divider-line"></span>
+        <span class="divider-text">INFORME DE ANÁLISIS CLÍNICO</span>
+        <span class="divider-line"></span>
+      </div>
+
+      <!-- General Approval Banner -->
+      <div 
+        class="resultado-banner"
+        [class.banner-aprobado]="resultado?.aprobado"
+        [class.banner-rechazado]="!resultado?.aprobado"
+      >
+        <div class="banner-status-icon">
+          <span class="material-icons-round">
+            {{ resultado?.aprobado ? 'check_circle' : 'cancel' }}
+          </span>
+        </div>
+        <div class="banner-content">
+          <h3>SOLICITUD {{ resultado?.aprobado ? 'APROBADA' : 'RECHAZADA' }}</h3>
+          <p>{{ resultado?.aprobado ? 'El procedimiento cumple con los criterios de cobertura de la póliza.' : 'La solicitud no califica para pre-autorización directa bajo los términos actuales.' }}</p>
+        </div>
+      </div>
+
+      <!-- Dashboard Grid -->
+      <div class="dashboard-grid">
+        
+        <!-- Column 1: Patient Info -->
+        <div class="dashboard-card" *ngIf="resultado?.paciente">
+          <div class="card-header">
+            <span class="material-icons-round card-header-icon">person</span>
+            <h4>Ficha del Paciente</h4>
+          </div>
+          <div class="card-body">
+            <div class="info-item">
+              <span class="info-label">Nombre Completo</span>
+              <span class="info-value">{{ resultado?.paciente?.nombre }}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Plan de Seguro</span>
+              <span class="info-value plan-badge">{{ resultado?.paciente?.plan }}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Período de Afiliación</span>
+              <span class="info-value">{{ resultado?.paciente?.diasAfiliado }} días activos</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Column 2: Clinical Details -->
+        <div class="dashboard-card">
+          <div class="card-header">
+            <span class="material-icons-round card-header-icon">health_and_safety</span>
+            <h4>Criterio de Evaluación</h4>
+          </div>
+          <div class="card-body">
+            <div class="info-item" *ngIf="resultado?.especialidad">
+              <span class="info-label">Especialidad Requerida</span>
+              <span class="info-value specialty-badge">
+                <span class="material-icons-round specialty-icon">medical_services</span>
+                {{ resultado?.especialidad }}
+              </span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Justificación / Motivo</span>
+              <div class="motivo-box" [class.motivo-aprobado]="resultado?.aprobado" [class.motivo-rechazado]="!resultado?.aprobado">
+                <span class="material-icons-round motivo-icon">
+                  {{ resultado?.aprobado ? 'verified' : 'error_outline' }}
+                </span>
+                <p class="motivo-text">{{ resultado?.motivo }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ========================================== -->
+<!-- RESULT POPUP MODAL (VENTANA EMERGENTE) -->
+<!-- ========================================== -->
+<div 
+  class="modal-backdrop"
+  *ngIf="mostrarModal"
+  (click)="cerrarModal()"
+>
+  <div 
+    class="modal-card animate-zoom-in"
+    [class.modal-aprobado]="resultado?.aprobado"
+    [class.modal-rechazado]="!resultado?.aprobado"
+    (click)="$event.stopPropagation()"
+  >
+    <!-- Modal Close Icon Button -->
+    <button class="modal-close-btn" (click)="cerrarModal()">
+      <span class="material-icons-round">close</span>
+    </button>
+
+    <!-- Glowing Circle Status Icon -->
+    <div class="modal-status-icon-container">
+      <div class="status-icon-ring"></div>
+      <span class="material-icons-round status-icon">
+        {{ resultado?.aprobado ? 'check_circle' : 'warning' }}
+      </span>
+    </div>
+
+    <!-- Veredict Text -->
+    <div class="modal-title-section">
+      <span class="modal-badge-status">RESULTADO DEL ANÁLISIS</span>
+      <h2 class="modal-status-title">
+        {{ resultado?.aprobado ? 'Solicitud Aprobada' : 'Solicitud Rechazada' }}
+      </h2>
+    </div>
+
+    <!-- Patient Highlight Box -->
+    <div class="modal-patient-highlight" *ngIf="resultado?.paciente">
+      <span class="material-icons-round patient-icon">medical_information</span>
+      <div class="patient-details">
+        <span class="patient-name">{{ resultado?.paciente?.nombre }}</span>
+        <span class="patient-id">C.I. {{ cedula }}</span>
+      </div>
+    </div>
+
+    <!-- Clinical Reason Summary -->
+    <div class="modal-reason-container">
+      <h4>Detalle del Diagnóstico:</h4>
+      <p class="modal-reason-text">
+        {{ resultado?.motivo }}
+      </p>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="modal-actions">
+      <button 
+        class="btn-modal-dismiss" 
+        (click)="cerrarModal()"
+      >
+        Ver Informe Completo
+      </button>
+    </div>
+  </div>
+</div>
