@@ -13,41 +13,35 @@
         <span class="material-icons-round logo-icon">shield_moon</span>
         <span class="brand-text">Seguro<span class="brand-accent">IA</span></span>
       </div>
-      <div class="brand-badge">AI CLINICAL ENGINE v2.4</div>
+      <div class="brand-badge">AI CLINICAL MAVERICK</div>
     </div>
 
     <!-- Title and Subtitle -->
     <div class="title-section">
       <h1>Pre-Autorización Quirúrgica</h1>
       <p class="subtitle">
-        Análisis automático de informes médicos en PDF respaldado por Inteligencia Artificial para la validación de seguros.
+        Análisis automático de informes médicos en PDF respaldado por Inteligencia Artificial para la validación de
+        seguros.
       </p>
     </div>
 
-    <!-- Beautiful Error Alert Banner -->
-    <div 
-      class="alert-banner animate-fade-in" 
-      *ngIf="mensajeError"
+    <!-- Beautiful Clinical Alert Banner -->
+    <div class="alert-banner animate-fade-in" *ngIf="mensajeError" 
       [class.alert-warning]="tipoError === 'warning'"
       [class.alert-error]="tipoError === 'error'"
-    >
+      [class.alert-success]="tipoError === 'success'">
       <div class="alert-content">
         <span class="material-icons-round alert-icon">
-          {{ tipoError === 'warning' ? 'error' : 'gpp_maybe' }}
+          {{ tipoError === 'warning' ? 'error' : (tipoError === 'success' ? 'check_circle' : 'gpp_maybe') }}
         </span>
         <div class="alert-text-wrapper">
           <span class="alert-title">
-            {{ tipoError === 'warning' ? 'Aviso del Sistema' : 'Error de Validación' }}
+            {{ tipoError === 'warning' ? 'Aviso del Sistema' : (tipoError === 'success' ? 'Solicitud Aprobada' : 'Restricción / Error') }}
           </span>
           <span class="alert-desc">{{ mensajeError }}</span>
         </div>
       </div>
-      <button 
-        type="button" 
-        class="btn-alert-close" 
-        (click)="limpiarError()"
-        title="Cerrar aviso"
-      >
+      <button type="button" class="btn-alert-close" (click)="limpiarError()" title="Cerrar aviso">
         <span class="material-icons-round">close</span>
       </button>
     </div>
@@ -62,13 +56,7 @@
         </label>
         <div class="input-wrapper">
           <span class="material-icons-round input-icon">person</span>
-          <input
-            id="cedula-input"
-            type="text"
-            [(ngModel)]="cedula"
-            placeholder="Ej: 1723456789"
-            [disabled]="loading"
-          />
+          <input id="cedula-input" type="text" [(ngModel)]="cedula" placeholder="Ej: 1723456789" [disabled]="loading" />
         </div>
       </div>
 
@@ -78,31 +66,18 @@
           <span class="material-icons-round label-icon">description</span>
           Informe Médico en PDF
         </label>
-        
+
         <!-- Drop zone when NO file is selected -->
-        <div 
-          *ngIf="!archivo"
-          class="drop-zone"
-          (click)="fileInput.click()"
-        >
+        <div *ngIf="!archivo" class="drop-zone" (click)="fileInput.click()">
           <span class="material-icons-round upload-icon">cloud_upload</span>
           <p class="drop-text-primary">Arrastra tu reporte PDF aquí</p>
           <p class="drop-text-secondary">o haz clic para explorar en tu equipo</p>
           <span class="file-type-badge">PDF (Máx. 10MB)</span>
-          <input
-            type="file"
-            #fileInput
-            (change)="seleccionarArchivo($event)"
-            accept=".pdf"
-            style="display: none;"
-          />
+          <input type="file" #fileInput (change)="seleccionarArchivo($event)" accept=".pdf" style="display: none;" />
         </div>
 
         <!-- File selected state card -->
-        <div 
-          *ngIf="archivo" 
-          class="file-card animate-fade-in"
-        >
+        <div *ngIf="archivo" class="file-card animate-fade-in">
           <div class="file-card-info">
             <span class="material-icons-round pdf-icon">picture_as_pdf</span>
             <div class="file-details">
@@ -110,33 +85,18 @@
               <p class="file-size">{{ tamanoArchivo }}</p>
             </div>
           </div>
-          <button 
-            type="button"
-            class="btn-remove"
-            (click)="removerArchivo(fileInput)"
-            title="Quitar archivo"
-            [disabled]="loading"
-          >
+          <button type="button" class="btn-remove" (click)="removerArchivo(fileInput)" title="Quitar archivo"
+            [disabled]="loading">
             <span class="material-icons-round">close</span>
           </button>
-          
+
           <!-- Hidden file input to preserve reference -->
-          <input
-            type="file"
-            #fileInput
-            (change)="seleccionarArchivo($event)"
-            accept=".pdf"
-            style="display: none;"
-          />
+          <input type="file" #fileInput (change)="seleccionarArchivo($event)" accept=".pdf" style="display: none;" />
         </div>
       </div>
 
       <!-- Action Button -->
-      <button
-        class="btn-submit"
-        (click)="enviar()"
-        [disabled]="loading || !cedula || !archivo"
-      >
+      <button class="btn-submit" (click)="enviar()" [disabled]="loading || !archivo">
         <span *ngIf="!loading" class="material-icons-round btn-icon">psychology</span>
         <span *ngIf="loading" class="spinner"></span>
         <span class="btn-text">{{ loading ? 'Analizando Reporte con IA...' : 'Evaluar Solicitud' }}</span>
@@ -144,10 +104,7 @@
     </div>
 
     <!-- On-Page Detailed Analysis Section (always visible underneath once calculated) -->
-    <div
-      class="resultado-container animate-fade-in"
-      *ngIf="resultado"
-    >
+    <div class="resultado-container animate-fade-in" *ngIf="resultado">
       <div class="section-divider">
         <span class="divider-line"></span>
         <span class="divider-text">INFORME DE ANÁLISIS CLÍNICO</span>
@@ -155,11 +112,8 @@
       </div>
 
       <!-- General Approval Banner -->
-      <div 
-        class="resultado-banner"
-        [class.banner-aprobado]="resultado?.aprobado"
-        [class.banner-rechazado]="!resultado?.aprobado"
-      >
+      <div class="resultado-banner" [class.banner-aprobado]="resultado?.aprobado"
+        [class.banner-rechazado]="!resultado?.aprobado">
         <div class="banner-status-icon">
           <span class="material-icons-round">
             {{ resultado?.aprobado ? 'check_circle' : 'cancel' }}
@@ -167,13 +121,14 @@
         </div>
         <div class="banner-content">
           <h3>SOLICITUD {{ resultado?.aprobado ? 'APROBADA' : 'RECHAZADA' }}</h3>
-          <p>{{ resultado?.aprobado ? 'El procedimiento cumple con los criterios de cobertura de la póliza.' : 'La solicitud no califica para pre-autorización directa bajo los términos actuales.' }}</p>
+          <p>{{ resultado?.aprobado ? 'El procedimiento cumple con los criterios de cobertura de la póliza.' : 'La
+            solicitud no califica para pre-autorización directa bajo los términos actuales.' }}</p>
         </div>
       </div>
 
       <!-- Dashboard Grid -->
       <div class="dashboard-grid">
-        
+
         <!-- Column 1: Patient Info -->
         <div class="dashboard-card" *ngIf="resultado?.paciente">
           <div class="card-header">
@@ -212,7 +167,8 @@
             </div>
             <div class="info-item">
               <span class="info-label">Justificación / Motivo</span>
-              <div class="motivo-box" [class.motivo-aprobado]="resultado?.aprobado" [class.motivo-rechazado]="!resultado?.aprobado">
+              <div class="motivo-box" [class.motivo-aprobado]="resultado?.aprobado"
+                [class.motivo-rechazado]="!resultado?.aprobado">
                 <span class="material-icons-round motivo-icon">
                   {{ resultado?.aprobado ? 'verified' : 'error_outline' }}
                 </span>
@@ -231,17 +187,9 @@
 <!-- ========================================== -->
 <!-- RESULT POPUP MODAL (VENTANA EMERGENTE) -->
 <!-- ========================================== -->
-<div 
-  class="modal-backdrop"
-  *ngIf="mostrarModal"
-  (click)="cerrarModal()"
->
-  <div 
-    class="modal-card animate-zoom-in"
-    [class.modal-aprobado]="resultado?.aprobado"
-    [class.modal-rechazado]="!resultado?.aprobado"
-    (click)="$event.stopPropagation()"
-  >
+<div class="modal-backdrop" *ngIf="mostrarModal" (click)="cerrarModal()">
+  <div class="modal-card animate-zoom-in" [class.modal-aprobado]="resultado?.aprobado"
+    [class.modal-rechazado]="!resultado?.aprobado" (click)="$event.stopPropagation()">
     <!-- Modal Close Icon Button -->
     <button class="modal-close-btn" (click)="cerrarModal()">
       <span class="material-icons-round">close</span>
@@ -282,10 +230,7 @@
 
     <!-- Action Buttons -->
     <div class="modal-actions">
-      <button 
-        class="btn-modal-dismiss" 
-        (click)="cerrarModal()"
-      >
+      <button class="btn-modal-dismiss" (click)="cerrarModal()">
         Ver Informe Completo
       </button>
     </div>
