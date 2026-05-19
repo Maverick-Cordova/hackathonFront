@@ -23,17 +23,16 @@
       </p>
     </div>
 
-    <div class="alert-banner animate-fade-in" *ngIf="mensajeError" 
-      [class.alert-warning]="tipoError === 'warning'"
-      [class.alert-error]="tipoError === 'error'"
-      [class.alert-success]="tipoError === 'success'">
+    <div class="alert-banner animate-fade-in" *ngIf="mensajeError" [class.alert-warning]="tipoError === 'warning'"
+      [class.alert-error]="tipoError === 'error'" [class.alert-success]="tipoError === 'success'">
       <div class="alert-content">
         <span class="material-icons-round alert-icon">
           {{ tipoError === 'warning' ? 'error' : (tipoError === 'success' ? 'check_circle' : 'gpp_maybe') }}
         </span>
         <div class="alert-text-wrapper">
           <span class="alert-title">
-            {{ tipoError === 'warning' ? 'Aviso del Sistema' : (tipoError === 'success' ? 'Solicitud Aprobada' : 'Restricción / Error') }}
+            {{ tipoError === 'warning' ? 'Aviso del Sistema' : (tipoError === 'success' ? 'Solicitud Aprobada' :
+            'Restricción / Error') }}
           </span>
           <span class="alert-desc">{{ mensajeError }}</span>
         </div>
@@ -51,11 +50,13 @@
         </label>
         <div class="input-wrapper">
           <span class="material-icons-round input-icon">person</span>
-          <input id="cedula-input" type="text" [(ngModel)]="cedula" placeholder="Ej: 0944329077 (Opcional - Auto-extraído por IA)" [disabled]="loading" />
+          <input id="cedula-input" type="text" [(ngModel)]="cedula"
+            placeholder="Ej: 0944329077 (Opcional - Auto-extraído por IA)" [disabled]="loading" />
         </div>
         <div class="field-hint">
           <span class="material-icons-round field-hint-icon">info</span>
-          Si se deja vacío, la Inteligencia Artificial buscará y extraerá la cédula automáticamente desde el reporte médico.
+          Si se deja vacío, la Inteligencia Artificial buscará y extraerá la cédula automáticamente desde el reporte
+          médico.
         </div>
       </div>
 
@@ -95,6 +96,22 @@
         <span *ngIf="loading" class="spinner"></span>
         <span class="btn-text">{{ loading ? 'Analizando Reporte con IA...' : 'Evaluar Solicitud' }}</span>
       </button>
+
+      <div class="demo-download">
+
+        <button class="btn-demo" (click)="descargarPDFDemo()" [disabled]="loading">
+          <span class="material-icons-round">
+            download
+          </span>
+
+          Descargar PDF de Ejemplo
+        </button>
+
+        <p class="demo-text">
+          Use este documento de prueba para validar el análisis automático con IA.
+        </p>
+
+      </div>
     </div>
 
     <div class="resultado-container animate-fade-in" *ngIf="resultado">

@@ -181,4 +181,14 @@ export class Home {
     this.mostrarModal = false;
     this.cdr.detectChanges();
   }
+
+
+  descargarPDFDemo() {
+
+    window.open(
+      "/assets/demo-informe-medico.pdf",
+      "_blank"
+    );
+
+  }
 }

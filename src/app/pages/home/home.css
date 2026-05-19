@@ -1,5 +1,5 @@
 :host {
-  
+
   --bg-dark-base: #060913;
   --bg-dark-surface: #0e1322;
   --primary: #3b82f6;
@@ -1071,4 +1071,50 @@
 .btn-alert-close:hover {
   background: rgba(255, 255, 255, 0.05);
   color: white;
+}
+
+.demo-download {
+  margin-top: 18px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.btn-demo {
+  width: 100%;
+  padding: 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.03);
+  color: white;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+
+  transition: all 0.25s ease;
+}
+
+.btn-demo:hover {
+  background: rgba(59, 130, 246, 0.12);
+  border-color: rgba(59, 130, 246, 0.35);
+  box-shadow: 0 0 18px rgba(59, 130, 246, 0.18);
+  transform: translateY(-2px);
+}
+
+.btn-demo span {
+  font-size: 20px;
+  color: #60a5fa;
+}
+
+.demo-text {
+  font-size: 12px;
+  color: #94a3b8;
+  text-align: center;
+  line-height: 1.5;
 }
